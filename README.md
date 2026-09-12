@@ -1,103 +1,338 @@
 # SRMlive — The Campus, Live.
 
-A campus events feed built with Next.js, Tailwind CSS, and Supabase. Discover
-what's happening on campus, like and save events, and post new ones.
+**Live:** https://srmlive.vercel.app/
 
-## Tech stack
+SRMlive is a **campus event discovery platform for SRM** that brings hackathons, fests, sports matches, workshops, guest lectures, and student activities into one place.
 
-- Next.js 14 (App Router) + React
-- Tailwind CSS
-- Supabase (Postgres) for storing events
-- Lucide React for icons
+Instead of relying on scattered Instagram stories, WhatsApp groups, and posters, SRMlive gives students a simple way to **discover what's happening on campus, explore events, and engage with the campus community.**
 
-## Project structure
+## ✨ Why SRMlive?
 
-```
+Campus events are often promoted across multiple platforms, making it easy for students to miss important opportunities.
+
+SRMlive aims to create a **single, engaging campus feed** where students can:
+
+* Discover upcoming events
+* Search events by club, venue, or title
+* Explore events by category
+* See what's trending among students
+* Like and save events
+* View complete event information
+* Share and promote student activities
+* Create and publish new events
+
+The goal is simple:
+
+> **Make campus life easier to discover.**
+
+---
+
+## 🚀 Features
+
+### 🏠 Home
+
+* Editorial-style hero section
+* Live event ticker
+* "Happening This Week" event grid
+* Quick access to popular campus activities
+
+### 🔎 Explore
+
+Search and discover events using:
+
+* Event title
+* Club/organiser
+* Venue
+* Category
+
+### 📈 Trending
+
+Events are ranked based on student engagement and likes, helping surface activities that are gaining attention across campus.
+
+### 📅 Event Details
+
+Each event includes:
+
+* Event name
+* Description
+* Date
+* Time
+* Venue
+* Organiser
+* Category
+
+### ❤️ Like & Save
+
+Students can interact with events by:
+
+* Liking events
+* Saving events for later
+* Bookmarking without requiring an account
+
+### ➕ Create Event
+
+Students and organisers can create and publish campus events through a dedicated event submission form.
+
+When Supabase authentication is connected, event creation is restricted to logged-in users.
+
+### 🔐 Authentication
+
+Email/password authentication powered by Supabase.
+
+### 🎨 Event Posters
+
+Every event automatically receives a **category-based poster design**.
+
+Instead of relying on random stock images, SRMlive generates visually consistent event artwork using:
+
+* Category colors
+* Patterns
+* Icons
+* Typography
+
+This keeps the platform visually consistent while eliminating the need for image uploads.
+
+### 📱 Responsive Design
+
+Designed to work across:
+
+* Desktop
+* Tablet
+* Mobile
+
+### ⚡ User Experience
+
+Includes dedicated:
+
+* Loading states
+* Empty states
+* Error states
+* Responsive interactions
+* Reduced-motion support
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Next.js 14
+* React
+* Tailwind CSS
+* Lucide React
+
+### Backend / Database
+
+* Supabase
+* PostgreSQL
+* Supabase Auth
+
+### Deployment
+
+* Vercel
+
+---
+
+## 🏗️ Project Structure
+
+```text
 src/
-  app/          Pages (Home, Explore, Trending, Create Event, Event detail)
-  components/   Reusable UI pieces (Navbar, EventCard, buttons, states)
-  data/         Seed data used before Supabase is connected
-  lib/          Supabase client + data-access functions
+├── app/
+│   ├── Home
+│   ├── Explore
+│   ├── Trending
+│   ├── Create Event
+│   ├── Event Details
+│   └── Login
+│
+├── components/
+│   ├── Navbar
+│   ├── EventCard
+│   ├── EventPoster
+│   ├── Buttons
+│   ├── States
+│   └── Cursor
+│
+├── data/
+│   └── events.js
+│
+└── lib/
+    ├── Supabase Client
+    ├── Event Data Access
+    ├── Authentication
+    └── Category Styles
 ```
 
-## 1. Run it locally with sample data (no Supabase needed yet)
+---
+
+## 💻 Run Locally
+
+Clone the repository and install dependencies:
 
 ```bash
 npm install
-npm run dev
 ```
 
-Open http://localhost:3000. The app works fully with the seed data in
-`src/data/events.js` — search, filters, likes, saves, and posting new events
-all work in memory. This is the fastest way to check the UI.
-
-Note: without Supabase configured, anything you post or like resets when the
-dev server restarts, since it's only held in memory.
-
-## 2. Connect Supabase
-
-### a. Create a project
-
-Go to https://supabase.com, create a new project, and wait for it to finish
-provisioning.
-
-### b. Create the `events` table
-
-Open **SQL Editor** in your Supabase project and run the contents of
-`supabase.sql` (included in this repo). It creates the `events` table, sets
-up basic public read/write policies, and optionally seeds two rows.
-
-### c. Set your environment variables
-
-Copy the example env file:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Find your project's URL and anon key under **Project Settings → API**, and
-fill in `.env.local`:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-public-key
-```
-
-### d. Restart the dev server
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Once both env vars are set, the app automatically reads and writes to
-Supabase instead of the in-memory seed data — no code changes needed. This
-switch happens in `src/lib/supabaseClient.js` / `src/lib/events.js`.
+Then open:
 
-## 3. Deploy to Vercel
-
-```bash
-npm install -g vercel
-vercel
+```text
+http://localhost:3000
 ```
 
-Or connect the GitHub repo directly at https://vercel.com/new. Either way,
-add the two environment variables from `.env.local` in the Vercel project
-settings (**Settings → Environment Variables**) before your first deploy.
+The application can initially run using the included sample event data.
 
-## Notes on scope (things kept deliberately simple)
+---
 
-- **No authentication.** Anyone can post an event or like one — there's no
-  login system. The Supabase policies in `supabase.sql` reflect this
-  (public read/write). Add Supabase Auth later if you want events tied to a
-  real user or club account.
-- **Saved events are local to the browser** (stored in `localStorage`), not
-  synced to Supabase, since there's no account system to attach them to.
-- **Posters** default to a placeholder image (via picsum.photos) if you
-  don't provide a poster URL when creating an event.
+## 🗄️ Supabase Setup
 
-## Extending it
+SRMlive uses Supabase for persistent event data and authentication.
 
-- Add Supabase Auth + a `profiles` table to tie events/saves to real users.
-- Add image upload via Supabase Storage instead of pasting a poster URL.
-- Add a "Save" table in Supabase once accounts exist, and swap
-  `useSavedEvents` to read/write there instead of localStorage.
+### 1. Create a Supabase project
+
+Create a project through Supabase.
+
+### 2. Create the events table
+
+Run the SQL provided in:
+
+```text
+supabase.sql
+```
+
+This creates the required `events` table and database policies.
+
+### 3. Configure environment variables
+
+Create:
+
+```text
+.env.local
+```
+
+Add:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+Restart the development server:
+
+```bash
+npm run dev
+```
+
+Once configured, SRMlive automatically switches from sample data to Supabase.
+
+---
+
+## 🔐 Authentication
+
+Authentication is handled using **Supabase Auth**.
+
+The current implementation supports:
+
+* Email/password sign up
+* Email/password login
+* Logout
+* Protected event creation
+
+Event discovery remains accessible without requiring an account.
+
+---
+
+## 📊 Engagement & Community
+
+SRMlive is designed around **student engagement** rather than simply displaying a list of events.
+
+The platform uses interaction signals such as likes and trending events to help students discover activities that are attracting attention.
+
+This creates a more dynamic experience where the campus community helps surface what's worth checking out.
+
+---
+
+## 🎨 Design Philosophy
+
+### No stock photos
+
+Events receive automatically generated visual posters based on their category.
+
+This provides a consistent visual identity across the platform while keeping event creation simple.
+
+### Editorial-style interface
+
+The interface takes inspiration from modern media and content platforms rather than traditional event listing websites.
+
+The design focuses on:
+
+* Strong visual hierarchy
+* Clear event information
+* Easy discovery
+* Fast navigation
+* Mobile responsiveness
+* Consistent branding
+
+### Motion with purpose
+
+Subtle interactions are used to make browsing feel more engaging without overwhelming the user.
+
+Animations are automatically reduced for users who prefer reduced motion.
+
+---
+
+## 📌 Current Scope
+
+The project intentionally keeps the first version lightweight.
+
+Current limitations include:
+
+* Email/password authentication only
+* No OAuth providers
+* Saved events are stored locally
+* No dedicated user dashboard
+* No password reset flow
+* Generated posters instead of image uploads
+* No pagination yet
+
+---
+
+## 🔮 Future Improvements
+
+Potential extensions include:
+
+* **My Events** dashboard for organisers
+* Google/college email authentication
+* Event reminders and notifications
+* Supabase-based saved events
+* Image uploads through Supabase Storage
+* Event sharing
+* Event registration
+* Club/organiser profiles
+* Event analytics
+* Pagination and advanced filtering
+* Personalised event recommendations
+* Push notifications for upcoming events
+
+---
+
+## 🎯 Project Objective
+
+SRMlive aims to become a **central digital discovery layer for campus life** — helping students find opportunities, helping clubs reach their audience, and making campus activities more visible.
+
+> **Discover the campus.
+> Find your people.
+> Don't miss what's happening.**
+
+---
+
+## 🌐 Live Demo
+
+**SRMlive:** https://srmlive.vercel.app/
+
+Built with **Next.js, Tailwind CSS, React, and Supabase**.
